@@ -116,10 +116,10 @@ const SVG_CONTENT = `
 
   <rect x="750" y="158" width="180" height="80" class="box" fill="#0f172a" stroke="#FC3D21" stroke-width="1.5"/>
   <text x="840" y="178" text-anchor="middle" class="title" style="fill:#FC3D21">LAKEBASE</text>
-  <text x="840" y="192" text-anchor="middle" class="subtitle">Managed Postgres serving</text>
-  <text x="768" y="208" class="subtitle" style="font-size:8px;fill:#64748b">Sub-ms API reads</text>
-  <text x="768" y="220" class="subtitle" style="font-size:8px;fill:#64748b">1,121 trajectory points</text>
-  <text x="768" y="232" class="subtitle" style="font-size:8px;fill:#64748b">9 milestones</text>
+  <text x="840" y="192" text-anchor="middle" class="subtitle">Synced Tables (CONTINUOUS)</text>
+  <text x="768" y="208" class="subtitle" style="font-size:8px;fill:#64748b">Auto Delta → Postgres sync</text>
+  <text x="768" y="220" class="subtitle" style="font-size:8px;fill:#64748b">current_status, trajectory</text>
+  <text x="768" y="232" class="subtitle" style="font-size:8px;fill:#64748b">milestones | CDF enabled</text>
 
   <path d="M240,198 L270,198" class="edge-track"/><path d="M240,198 L270,198" class="edge edge-animated" stroke="#3b82f6"/>
   <path d="M480,198 L510,198" class="edge-track"/><path d="M480,198 L510,198" class="edge edge-animated" stroke="#f59e0b"/>
@@ -207,7 +207,7 @@ const SVG_CONTENT = `
 const HOW_IT_WORKS = [
   { icon: "🛰", title: "Real NASA Data Sources", text: "JPL Horizons API provides Orion + Moon state vectors. NASA Image API supplies media. DSN status computed from station geometry. All real — no mocks.", color: "#10b981" },
   { icon: "📐", title: "Medallion Lakehouse", text: "Bronze (raw API responses) → Silver (normalized, deduped) → Gold (business views) in Unity Catalog. Genie-generated ingestion notebook keeps data fresh every 5 min.", color: "#3b82f6" },
-  { icon: "🐘", title: "Lakebase + UC Serving", text: "Lakebase (managed Postgres) for sub-ms reads. UC tables in oil_pump_monitor_catalog.artemis_tracker as SQL warehouse fallback. 1,121+ trajectory points.", color: "#FC3D21" },
+  { icon: "🐘", title: "Lakebase Synced Tables", text: "CONTINUOUS sync from UC Delta tables to Lakebase Postgres via Change Data Feed. 3 synced tables auto-replicate. No manual ETL — Databricks handles it.", color: "#FC3D21" },
   { icon: "🤖", title: "Mission Advisor (Genie)", text: "Powered by Databricks Genie. Natural language questions → SQL queries → English answers from live UC mission tables. Maintains conversation context for follow-ups.", color: "#f59e0b" },
   { icon: "🔄", title: "Triple Fallback", text: "Every endpoint: try DB first → Horizons live API → hardcoded real data. Error boundaries catch render failures. Diagnostics computed from cached endpoint responses.", color: "#8b5cf6" },
   { icon: "🌍", title: "3D Orbital Visualization", text: "CatmullRom spline interpolation renders smooth elliptical trajectory. 833 points from launch to splashdown. Interactive digital twin with clickable specs. NASA Live PiP.", color: "#10b981" },

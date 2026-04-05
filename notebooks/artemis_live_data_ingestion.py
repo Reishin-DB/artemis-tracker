@@ -141,14 +141,6 @@ def create_lakebase_tables(conn):
         description TEXT
     );
 
-    CREATE TABLE IF NOT EXISTS media_catalog (
-        nasa_id TEXT PRIMARY KEY,
-        title TEXT,
-        media_type TEXT,
-        thumbnail_url TEXT,
-        full_url TEXT,
-        date_created TIMESTAMP
-    );
     """
     with conn.cursor() as cur:
         cur.execute(ddl)
@@ -738,10 +730,10 @@ write_to_uc(trajectory, current)
 print("\n[5/6] Writing to Lakebase...")
 write_to_lakebase(conn, trajectory, current)
 
-# 6. Update milestones and media
-print("\n[6/6] Updating milestones and media catalog...")
+# 6. Update milestones
+print("\n[6/6] Updating milestones...")
 update_milestones(conn)
-update_media(conn)
+# media_catalog removed — not used in the app
 
 # Cleanup
 conn.close()

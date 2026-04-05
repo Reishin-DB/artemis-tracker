@@ -22,7 +22,7 @@ env:
   - name: DATABRICKS_WAREHOUSE_ID
     value: "87e069097741b56c"
   - name: GENIE_SPACE_ID
-    value: "01f131082b571a838ce64de9c3bc8b80"
+    value: "01f13131b837198d9194c3e15390c8f3"
 
 resources:
   - name: artemis-lakebase

@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.api import advisor, current, diagnostics, media, milestones, path
+from app.api import advisor, current, diagnostics, milestones, path
 
 # ---------------------------------------------------------------------------
 # App setup
@@ -39,7 +39,6 @@ app.add_middleware(
 app.include_router(current.router)
 app.include_router(path.router)
 app.include_router(milestones.router)
-app.include_router(media.router)
 app.include_router(diagnostics.router)
 app.include_router(advisor.router)
 
