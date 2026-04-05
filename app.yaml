@@ -1,3 +1,5 @@
+# NOTE: Replace warehouse ID, Genie Space ID, and Lakebase instance
+# with your own values before deploying.
 command:
   - uvicorn
   - app.main:app

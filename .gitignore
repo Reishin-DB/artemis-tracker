@@ -3,4 +3,7 @@ __pycache__/
 _deploy/
 .DS_Store
 *.pyc
+*.env
+venv/
+.venv/
 app/frontend/node_modules/

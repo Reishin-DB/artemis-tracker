@@ -123,7 +123,7 @@ def _init_backend():
 # Public query helpers
 # ---------------------------------------------------------------------------
 
-UC_SCHEMA = "oil_pump_monitor_catalog.artemis_tracker"
+UC_SCHEMA = os.environ.get("UC_SCHEMA", "oil_pump_monitor_catalog.artemis_tracker")
 
 def get_backend() -> str:
     """Return current backend: 'postgres', 'databricks', or 'none'."""
