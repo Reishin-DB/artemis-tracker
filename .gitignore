@@ -1,0 +1,6 @@
+node_modules/
+__pycache__/
+_deploy/
+.DS_Store
+*.pyc
+app/frontend/node_modules/

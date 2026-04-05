@@ -1,0 +1,31 @@
+command:
+  - uvicorn
+  - app.main:app
+  - --host=0.0.0.0
+  - --port=8000
+
+env:
+  - name: APP_TITLE
+    value: "Artemis II Mission Tracker"
+  - name: PGUSER
+    valueFrom: artemis-lakebase
+  - name: PGPORT
+    valueFrom: artemis-lakebase
+  - name: PGHOST
+    valueFrom: artemis-lakebase
+  - name: PGPASSWORD
+    valueFrom: artemis-lakebase
+  - name: PGDATABASE
+    value: "artemis_app"
+  - name: LAKEBASE_INSTANCE
+    value: "artemis-tracker-lb"
+  - name: DATABRICKS_WAREHOUSE_ID
+    value: "87e069097741b56c"
+
+resources:
+  - name: artemis-lakebase
+    description: "Lakebase PostgreSQL for Artemis II mission data"
+    database:
+      instance_name: artemis-tracker-lb
+      database_name: artemis_app
+      permission: CAN_CONNECT_AND_CREATE
