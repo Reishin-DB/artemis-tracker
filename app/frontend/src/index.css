@@ -506,6 +506,7 @@ body {
   border-bottom-color: var(--highlight);
 }
 
+
 /* Admin Page */
 .admin-grid {
   display: grid;

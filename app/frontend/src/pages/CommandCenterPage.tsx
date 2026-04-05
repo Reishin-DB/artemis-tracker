@@ -142,7 +142,7 @@ const CommandCenterPage: React.FC = () => {
             to="/admin"
             className={`mcc-nav-link${location.pathname === "/admin" ? " active" : ""}`}
           >
-            Diagnostics
+            Operations
           </Link>
         </div>
       </header>

@@ -232,7 +232,7 @@ const AdminPage: React.FC = () => {
         <div className="mcc-header-left">
           <div className="mcc-header-text">
             <span className="mcc-title">ARTEMIS II</span>
-            <span className="mcc-subtitle">OPERATIONS</span>
+            <span className="mcc-subtitle">DIAGNOSTICS</span>
           </div>
         </div>
         <div className="mcc-header-right">
@@ -388,6 +388,7 @@ const AdminPage: React.FC = () => {
             </div>
           </>
         )}
+
       </main>
     </div>
   );
