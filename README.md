@@ -95,4 +95,4 @@ This is a demonstration project built for educational and showcase purposes only
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file.
+Databricks License - See [LICENSE](LICENSE) file.

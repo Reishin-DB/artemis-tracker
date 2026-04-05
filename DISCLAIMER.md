@@ -31,4 +31,4 @@ NASA, Artemis, Orion, and SLS are trademarks or registered trademarks of the Nat
 
 ## License
 
-This project is released under the MIT License. See [LICENSE](LICENSE) for details.
+This project is released under the Databricks License. See [LICENSE](LICENSE) for details.
