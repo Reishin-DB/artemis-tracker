@@ -93,11 +93,7 @@ def chat_with_advisor(req: ChatRequest):
     """Query Genie and return the response as JSON (not streaming)."""
     result = _query_genie(req.message, req.conversation_id)
 
-    response_text = result["content"]
-    if result.get("sql"):
-        response_text += f"\n\n```sql\n{result['sql']}\n```"
-
     return {
-        "content": response_text,
+        "content": result["content"],
         "conversation_id": result.get("conversation_id"),
     }

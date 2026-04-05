@@ -158,8 +158,8 @@ const SVG_CONTENT = `
 
   <rect x="590" y="348" width="130" height="48" class="box" fill="#1e293b" stroke="#FC3D21" stroke-width="1"/>
   <text x="655" y="367" text-anchor="middle" class="title">/advisor</text>
-  <text x="655" y="381" text-anchor="middle" class="subtitle">Streaming SSE</text>
-  <text x="655" y="392" text-anchor="middle" class="subtitle" style="fill:#FC3D21;font-size:7px">Claude LLM + live context</text>
+  <text x="655" y="381" text-anchor="middle" class="subtitle">Powered by Genie</text>
+  <text x="655" y="392" text-anchor="middle" class="subtitle" style="fill:#FC3D21;font-size:7px">NL → SQL → English answer</text>
 
   <rect x="730" y="348" width="120" height="48" class="box" fill="#1e293b" stroke="#64748b" stroke-width="1"/>
   <text x="790" y="367" text-anchor="middle" class="title">/media</text>
@@ -178,7 +178,7 @@ const SVG_CONTENT = `
   <rect x="30" y="438" width="440" height="70" class="box" fill="#1a0f0a" stroke="#f59e0b" stroke-width="1.5"/>
   <text x="250" y="458" text-anchor="middle" class="title" style="fill:#f59e0b">MISSION CONTROL CENTER</text>
   <text x="250" y="473" text-anchor="middle" class="subtitle">3D CatmullRom orbit | Interactive digital twin | NASA Live PiP</text>
-  <text x="250" y="486" text-anchor="middle" class="subtitle">Mission Advisor (LLM) | DSN comms | Crew schedule | Timeline</text>
+  <text x="250" y="486" text-anchor="middle" class="subtitle">Mission Advisor (Genie) | DSN comms | Crew schedule | Timeline</text>
   <text x="250" y="499" text-anchor="middle" class="subtitle" style="fill:#f59e0b;font-size:7px">Systems bar | Telemetry ticker | Error boundaries</text>
 
   <rect x="490" y="438" width="440" height="70" class="box" fill="#10091a" stroke="#8b5cf6" stroke-width="1.5"/>
@@ -208,7 +208,7 @@ const HOW_IT_WORKS = [
   { icon: "🛰", title: "Real NASA Data Sources", text: "JPL Horizons API provides Orion + Moon state vectors. NASA Image API supplies media. DSN status computed from station geometry. All real — no mocks.", color: "#10b981" },
   { icon: "📐", title: "Medallion Lakehouse", text: "Bronze (raw API responses) → Silver (normalized, deduped) → Gold (business views) in Unity Catalog. Genie-generated ingestion notebook keeps data fresh every 5 min.", color: "#3b82f6" },
   { icon: "🐘", title: "Lakebase + UC Serving", text: "Lakebase (managed Postgres) for sub-ms reads. UC tables in oil_pump_monitor_catalog.artemis_tracker as SQL warehouse fallback. 1,121+ trajectory points.", color: "#FC3D21" },
-  { icon: "🤖", title: "Mission Advisor (LLM)", text: "Claude-powered AI advisor with live telemetry context injection. Streams responses via SSE. Knows crew, trajectory, spacecraft systems, and mission timeline.", color: "#f59e0b" },
+  { icon: "🤖", title: "Mission Advisor (Genie)", text: "Powered by Databricks Genie. Natural language questions → SQL queries → English answers from live UC mission tables. Maintains conversation context for follow-ups.", color: "#f59e0b" },
   { icon: "🔄", title: "Triple Fallback", text: "Every endpoint: try DB first → Horizons live API → hardcoded real data. Error boundaries catch render failures. Diagnostics computed from cached endpoint responses.", color: "#8b5cf6" },
   { icon: "🌍", title: "3D Orbital Visualization", text: "CatmullRom spline interpolation renders smooth elliptical trajectory. 833 points from launch to splashdown. Interactive digital twin with clickable specs. NASA Live PiP.", color: "#10b981" },
 ];
