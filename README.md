@@ -2,7 +2,7 @@
 
 Real-time NASA Artemis II spacecraft tracking built entirely on Databricks.
 
-![Orbital Tracking](screenshots/orbital-tracking.png)
+![Mission Control](screenshots/mission-control.png)
 
 ## Overview
 
