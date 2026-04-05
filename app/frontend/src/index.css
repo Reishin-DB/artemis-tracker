@@ -446,23 +446,23 @@ body {
   color: var(--text-primary);
 }
 
-/* Stale Banner */
+/* Stale Banner — below header (60px) + ticker (44px) */
 .stale-banner {
   position: fixed;
-  top: 56px;
+  top: 104px;
   left: 0;
   right: 0;
-  z-index: 90;
+  z-index: 85;
   background: var(--amber-dim);
   border-bottom: 1px solid var(--amber);
-  padding: 10px 24px;
+  padding: 8px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--amber);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .stale-banner-icon {

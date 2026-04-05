@@ -149,9 +149,19 @@ def _fetch_from_db() -> Optional[dict[str, Any]]:
 
 @cached(ttl_seconds=30)
 def _fetch_current() -> dict[str, Any]:
-    # Try DB first, fall back to Horizons
+    # Try DB first
     result = _fetch_from_db()
     if result:
+        # If DB data is stale (>10 min), prefer live Horizons
+        staleness = result.get("staleness_seconds", 0)
+        try:
+            staleness = float(staleness)
+        except:
+            staleness = 0
+        if staleness > 600:
+            live = _fetch_from_horizons()
+            if live and not live.get("error"):
+                return live
         return result
     return _fetch_from_horizons()
 

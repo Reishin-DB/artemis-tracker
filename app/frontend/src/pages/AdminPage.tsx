@@ -135,56 +135,82 @@ const SVG_CONTENT = `
   <text x="740" y="285" text-anchor="middle" class="subtitle" style="font-size:9px;">SQL Alerts</text>
   <text x="880" y="285" text-anchor="middle" class="subtitle" style="font-size:9px;">Lineage</text>
 
-  <text x="20" y="335" class="label">FASTAPI BACKEND (DATABRICKS APP)</text>
-  <rect x="80" y="348" width="160" height="48" class="box" fill="#1e293b" stroke="#10b981" stroke-width="1"/>
-  <text x="160" y="370" text-anchor="middle" class="title">/api/v1/current</text>
-  <text x="160" y="384" text-anchor="middle" class="subtitle">30s cache | live position</text>
-  <rect x="260" y="348" width="160" height="48" class="box" fill="#1e293b" stroke="#3b82f6" stroke-width="1"/>
-  <text x="340" y="370" text-anchor="middle" class="title">/api/v1/path</text>
-  <text x="340" y="384" text-anchor="middle" class="subtitle">2m cache | full trajectory</text>
-  <rect x="440" y="348" width="160" height="48" class="box" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
-  <text x="520" y="370" text-anchor="middle" class="title">/api/v1/milestones</text>
-  <text x="520" y="384" text-anchor="middle" class="subtitle">5m cache | timeline</text>
-  <rect x="620" y="348" width="140" height="48" class="box" fill="#1e293b" stroke="#8b5cf6" stroke-width="1"/>
-  <text x="690" y="370" text-anchor="middle" class="title">/api/v1/media</text>
-  <text x="690" y="384" text-anchor="middle" class="subtitle">10m cache | images</text>
-  <rect x="780" y="348" width="150" height="48" class="box" fill="#1e293b" stroke="#FC3D21" stroke-width="1"/>
-  <text x="855" y="370" text-anchor="middle" class="title">/api/v1/diagnostics</text>
-  <text x="855" y="384" text-anchor="middle" class="subtitle">30s cache | ops health</text>
+  <text x="20" y="335" class="label">FASTAPI BACKEND (DATABRICKS APP) — 7 ENDPOINTS</text>
+  <rect x="30" y="348" width="130" height="48" class="box" fill="#1e293b" stroke="#10b981" stroke-width="1"/>
+  <text x="95" y="367" text-anchor="middle" class="title">/current</text>
+  <text x="95" y="381" text-anchor="middle" class="subtitle">30s | live position</text>
+  <text x="95" y="392" text-anchor="middle" class="subtitle" style="fill:#10b981;font-size:7px">DB → Horizons fallback</text>
 
-  <path d="M840,238 L855,348" class="edge-track"/><path d="M840,238 L855,348" class="edge edge-animated" stroke="#FC3D21"/>
-  <path d="M615,238 L520,348" class="edge-track"/><path d="M615,238 L520,348" class="edge edge-animated" stroke="#f59e0b"/>
-  <path d="M615,238 L340,348" class="edge-track"/><path d="M615,238 L340,348" class="edge edge-animated" stroke="#3b82f6"/>
-  <path d="M615,238 L160,348" class="edge-track"/><path d="M615,238 L160,348" class="edge edge-animated" stroke="#10b981"/>
+  <rect x="170" y="348" width="130" height="48" class="box" fill="#1e293b" stroke="#3b82f6" stroke-width="1"/>
+  <text x="235" y="367" text-anchor="middle" class="title">/path</text>
+  <text x="235" y="381" text-anchor="middle" class="subtitle">5m | CatmullRom curve</text>
+  <text x="235" y="392" text-anchor="middle" class="subtitle" style="fill:#3b82f6;font-size:7px">833 pts | full loop</text>
 
-  <text x="20" y="425" class="label">REACT FRONTEND</text>
-  <rect x="140" y="438" width="300" height="60" class="box" fill="#1a0f0a" stroke="#f59e0b" stroke-width="1.5"/>
-  <text x="290" y="466" text-anchor="middle" class="title" style="fill:#f59e0b">MISSION CONTROL CENTER</text>
-  <text x="290" y="484" text-anchor="middle" class="subtitle">3D orbit | Digital twin | DSN | Crew | Telemetry</text>
-  <rect x="500" y="438" width="300" height="60" class="box" fill="#10091a" stroke="#8b5cf6" stroke-width="1.5"/>
-  <text x="650" y="466" text-anchor="middle" class="title" style="fill:#8b5cf6">DIAGNOSTICS + DATA FLOW</text>
-  <text x="650" y="484" text-anchor="middle" class="subtitle">Source health | Pipeline architecture | Alerts</text>
+  <rect x="310" y="348" width="130" height="48" class="box" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
+  <text x="375" y="367" text-anchor="middle" class="title">/milestones</text>
+  <text x="375" y="381" text-anchor="middle" class="subtitle">5m | 9 events</text>
+  <text x="375" y="392" text-anchor="middle" class="subtitle" style="fill:#f59e0b;font-size:7px">DB → hardcoded fallback</text>
 
-  <path d="M340,396 L290,438" class="edge-track"/><path d="M340,396 L290,438" class="edge edge-animated" stroke="#f59e0b"/>
-  <path d="M855,396 L650,438" class="edge-track"/><path d="M855,396 L650,438" class="edge edge-animated" stroke="#8b5cf6"/>
+  <rect x="450" y="348" width="130" height="48" class="box" fill="#1e293b" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="515" y="367" text-anchor="middle" class="title">/diagnostics</text>
+  <text x="515" y="381" text-anchor="middle" class="subtitle">30s | 6 sources</text>
+  <text x="515" y="392" text-anchor="middle" class="subtitle" style="fill:#8b5cf6;font-size:7px">Computed from endpoints</text>
 
-  <text x="20" y="530" class="label">RESILIENCE: HORIZONS LIVE FALLBACK</text>
-  <rect x="80" y="543" width="800" height="40" class="box" fill="#0f172a" stroke="#10b981" stroke-width="1" stroke-dasharray="4 2"/>
-  <text x="480" y="565" text-anchor="middle" class="title" style="fill:#10b981">If Lakebase is unreachable -> FastAPI queries JPL Horizons directly -> Real-time data always available</text>
-  <text x="480" y="578" text-anchor="middle" class="subtitle">No simulated data. No mocks. Only real NASA mission telemetry. Always.</text>
+  <rect x="590" y="348" width="130" height="48" class="box" fill="#1e293b" stroke="#FC3D21" stroke-width="1"/>
+  <text x="655" y="367" text-anchor="middle" class="title">/advisor</text>
+  <text x="655" y="381" text-anchor="middle" class="subtitle">Streaming SSE</text>
+  <text x="655" y="392" text-anchor="middle" class="subtitle" style="fill:#FC3D21;font-size:7px">Claude LLM + live context</text>
+
+  <rect x="730" y="348" width="120" height="48" class="box" fill="#1e293b" stroke="#64748b" stroke-width="1"/>
+  <text x="790" y="367" text-anchor="middle" class="title">/media</text>
+  <text x="790" y="381" text-anchor="middle" class="subtitle">10m | NASA API</text>
+
+  <rect x="860" y="348" width="80" height="48" class="box" fill="#1e293b" stroke="#64748b" stroke-width="1"/>
+  <text x="900" y="367" text-anchor="middle" class="title">/health</text>
+  <text x="900" y="381" text-anchor="middle" class="subtitle">Backend info</text>
+
+  <path d="M840,238 L790,348" class="edge-track"/><path d="M840,238 L790,348" class="edge edge-animated" stroke="#FC3D21"/>
+  <path d="M615,238 L375,348" class="edge-track"/><path d="M615,238 L375,348" class="edge edge-animated" stroke="#f59e0b"/>
+  <path d="M615,238 L235,348" class="edge-track"/><path d="M615,238 L235,348" class="edge edge-animated" stroke="#3b82f6"/>
+  <path d="M135,238 L95,348" class="edge-track"/><path d="M135,238 L95,348" class="edge edge-animated" stroke="#10b981"/>
+
+  <text x="20" y="425" class="label">REACT FRONTEND (2 VIEWS)</text>
+  <rect x="30" y="438" width="440" height="70" class="box" fill="#1a0f0a" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="250" y="458" text-anchor="middle" class="title" style="fill:#f59e0b">MISSION CONTROL CENTER</text>
+  <text x="250" y="473" text-anchor="middle" class="subtitle">3D CatmullRom orbit | Interactive digital twin | NASA Live PiP</text>
+  <text x="250" y="486" text-anchor="middle" class="subtitle">Mission Advisor (LLM) | DSN comms | Crew schedule | Timeline</text>
+  <text x="250" y="499" text-anchor="middle" class="subtitle" style="fill:#f59e0b;font-size:7px">Systems bar | Telemetry ticker | Error boundaries</text>
+
+  <rect x="490" y="438" width="440" height="70" class="box" fill="#10091a" stroke="#8b5cf6" stroke-width="1.5"/>
+  <text x="710" y="458" text-anchor="middle" class="title" style="fill:#8b5cf6">OPERATIONS CENTER</text>
+  <text x="710" y="473" text-anchor="middle" class="subtitle">Pipeline diagnostics (6 live sources) | Data + AI flow diagram</text>
+  <text x="710" y="486" text-anchor="middle" class="subtitle">Source health cards | Active alerts | Architecture overview</text>
+  <text x="710" y="499" text-anchor="middle" class="subtitle" style="fill:#8b5cf6;font-size:7px">Tabbed navigation | Responsive layout</text>
+
+  <path d="M235,396 L250,438" class="edge-track"/><path d="M235,396 L250,438" class="edge edge-animated" stroke="#f59e0b"/>
+  <path d="M515,396 L710,438" class="edge-track"/><path d="M515,396 L710,438" class="edge edge-animated" stroke="#8b5cf6"/>
+
+  <text x="20" y="540" class="label">RESILIENCE + AUTOMATION</text>
+  <rect x="30" y="553" width="450" height="40" class="box" fill="#0f172a" stroke="#10b981" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="255" y="570" text-anchor="middle" class="title" style="fill:#10b981">Horizons Live Fallback — every endpoint has DB → API → hardcoded safety net</text>
+  <text x="255" y="583" text-anchor="middle" class="subtitle">No mocks. No simulated data. Real NASA telemetry always.</text>
+
+  <rect x="500" y="553" width="430" height="40" class="box" fill="#0f172a" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="715" y="570" text-anchor="middle" class="title" style="fill:#f59e0b">Genie Auto-Ingestion — scheduled notebook writes to UC + Lakebase</text>
+  <text x="715" y="583" text-anchor="middle" class="subtitle">Job ID 1015162933032962 | Every 5 min | Serverless compute</text>
 
   <text x="480" y="620" text-anchor="middle" style="font-size:10px;fill:#475569;">
-    Artemis II Mission Tracker — Built on Databricks | Lakebase | Unity Catalog | JPL Horizons | NASA AROW
+    Artemis II Mission Tracker — Databricks | Lakebase | Unity Catalog | JPL Horizons | Foundation Models | React Three Fiber
   </text>
 </svg>`;
 
 const HOW_IT_WORKS = [
-  { icon: "🛰", title: "Real NASA Data Sources", text: "JPL Horizons API provides Orion state vectors every 5 minutes. AROW publishes CCSDS OEM ephemeris. NASA Image API supplies mission photography.", color: "#10b981" },
-  { icon: "📐", title: "Medallion Lakehouse", text: "Bronze captures raw API responses. Silver normalizes coordinates, computes derived fields, deduplicates. Gold serves business-ready views.", color: "#3b82f6" },
-  { icon: "🐘", title: "Lakebase Serving", text: "Gold data syncs to Lakebase (managed Postgres) for sub-ms API reads. 1,121+ trajectory points from launch to now.", color: "#FC3D21" },
-  { icon: "🛡️", title: "Governance", text: "Unity Catalog provides lineage, access control, and data profiling. Databricks Workflows orchestrate ingestion.", color: "#f59e0b" },
-  { icon: "🔄", title: "Resilient Fallback", text: "If Lakebase is unreachable, the backend queries JPL Horizons directly. Real live data — never simulated.", color: "#8b5cf6" },
-  { icon: "🌍", title: "3D Visualization", text: "React Three Fiber renders Earth, Moon, trajectory, and Orion in real-time 3D. All coordinates from real J2000 vectors.", color: "#10b981" },
+  { icon: "🛰", title: "Real NASA Data Sources", text: "JPL Horizons API provides Orion + Moon state vectors. NASA Image API supplies media. DSN status computed from station geometry. All real — no mocks.", color: "#10b981" },
+  { icon: "📐", title: "Medallion Lakehouse", text: "Bronze (raw API responses) → Silver (normalized, deduped) → Gold (business views) in Unity Catalog. Genie-generated ingestion notebook keeps data fresh every 5 min.", color: "#3b82f6" },
+  { icon: "🐘", title: "Lakebase + UC Serving", text: "Lakebase (managed Postgres) for sub-ms reads. UC tables in oil_pump_monitor_catalog.artemis_tracker as SQL warehouse fallback. 1,121+ trajectory points.", color: "#FC3D21" },
+  { icon: "🤖", title: "Mission Advisor (LLM)", text: "Claude-powered AI advisor with live telemetry context injection. Streams responses via SSE. Knows crew, trajectory, spacecraft systems, and mission timeline.", color: "#f59e0b" },
+  { icon: "🔄", title: "Triple Fallback", text: "Every endpoint: try DB first → Horizons live API → hardcoded real data. Error boundaries catch render failures. Diagnostics computed from cached endpoint responses.", color: "#8b5cf6" },
+  { icon: "🌍", title: "3D Orbital Visualization", text: "CatmullRom spline interpolation renders smooth elliptical trajectory. 833 points from launch to splashdown. Interactive digital twin with clickable specs. NASA Live PiP.", color: "#10b981" },
 ];
 
 /* ── Component ──────────────────────────────────────────────── */

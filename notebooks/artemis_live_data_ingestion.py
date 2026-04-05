@@ -222,7 +222,7 @@ def fetch_full_trajectory():
     compute derived fields, return list of trajectory point dicts.
     """
     now = datetime.now(timezone.utc)
-    start = "2026-04-02 00:00"
+    start = "2026-04-02 02:00"
     stop = now.strftime("%Y-%m-%d %H:%M")
 
     print(f"Fetching Orion trajectory: {start} -> {stop}")
@@ -398,15 +398,18 @@ def write_to_uc(trajectory_points, current_pos):
         )
         for p in trajectory_points
     ]
-    traj_df = spark.createDataFrame(traj_rows)
-    traj_df.createOrReplaceTempView("new_trajectory")
+    if not traj_rows:
+        print("WARNING: No trajectory rows to write. Skipping UC trajectory update.")
+    else:
+        traj_df = spark.createDataFrame(traj_rows)
+        traj_df.createOrReplaceTempView("new_trajectory")
 
-    spark.sql(f"""
-        MERGE INTO {UC_SCHEMA}.trajectory_history AS target
-        USING new_trajectory AS source
-        ON target.epoch_utc = source.epoch_utc
-        WHEN NOT MATCHED THEN INSERT *
-    """)
+        spark.sql(f"""
+            MERGE INTO {UC_SCHEMA}.trajectory_history AS target
+            USING new_trajectory AS source
+            ON target.epoch_utc = source.epoch_utc
+            WHEN NOT MATCHED THEN INSERT *
+        """)
     new_count = spark.sql(f"SELECT COUNT(*) AS cnt FROM {UC_SCHEMA}.trajectory_history").collect()[0]["cnt"]
     print(f"  UC trajectory_history: {new_count} total rows")
 
@@ -438,6 +441,9 @@ def write_to_uc(trajectory_points, current_pos):
         data_source=str(cs["data_source"]),
         updated_at=cs["updated_at"],
     )
+    if cs_row is None:
+        print("WARNING: No current status to write. Skipping.")
+        return
     cs_df = spark.createDataFrame([cs_row])
     cs_df.createOrReplaceTempView("new_current_status")
 
@@ -593,8 +599,14 @@ def update_milestones(conn):
         MERGE INTO {UC_SCHEMA}.milestones AS target
         USING new_milestones AS source
         ON target.event_name = source.event_name
-        WHEN MATCHED THEN UPDATE SET *
-        WHEN NOT MATCHED THEN INSERT *
+        WHEN MATCHED THEN UPDATE SET
+            target.planned_ts = source.planned_ts,
+            target.actual_ts = source.actual_ts,
+            target.status = source.status,
+            target.phase = source.phase,
+            target.description = source.description
+        WHEN NOT MATCHED THEN INSERT (event_name, planned_ts, actual_ts, status, phase, description)
+            VALUES (source.event_name, source.planned_ts, source.actual_ts, source.status, source.phase, source.description)
     """)
     print("  UC milestones: merged")
 
@@ -681,7 +693,8 @@ def update_media(conn):
         MERGE INTO {UC_SCHEMA}.media_catalog AS target
         USING new_media AS source
         ON target.nasa_id = source.nasa_id
-        WHEN NOT MATCHED THEN INSERT *
+        WHEN NOT MATCHED THEN INSERT (nasa_id, title, media_type, thumbnail_url, full_url, date_created)
+            VALUES (source.nasa_id, source.title, source.media_type, source.thumbnail_url, source.full_url, source.date_created)
     """)
     print("  UC media_catalog: merged")
 

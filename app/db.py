@@ -58,7 +58,11 @@ def _try_postgres():
             logger.warning("Failed to generate Lakebase credential: %s", e)
             return False
 
-    port = int(os.environ.get("PGPORT", "5432"))
+    port_str = os.environ.get("PGPORT", "5432")
+    try:
+        port = int(port_str)
+    except (ValueError, TypeError):
+        port = 5432
 
     try:
         import psycopg2
