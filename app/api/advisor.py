@@ -14,7 +14,7 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["advisor"])
 
-GENIE_SPACE_ID = os.environ.get("GENIE_SPACE_ID", "01f1313bcf70177d8f12000e64d0f94a")
+GENIE_SPACE_ID = os.environ.get("GENIE_SPACE_ID", "<your-genie-space-id>")
 
 
 class ChatRequest(BaseModel):

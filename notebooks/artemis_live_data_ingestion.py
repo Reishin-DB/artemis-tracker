@@ -5,8 +5,8 @@
 # MAGIC
 # MAGIC This notebook fetches **live Orion spacecraft telemetry** from the [JPL Horizons API](https://ssd.jpl.nasa.gov/horizons/) and writes to both:
 # MAGIC
-# MAGIC * **Unity Catalog**: `oil_pump_monitor_catalog.artemis_tracker` (4 tables)
-# MAGIC * **Lakebase**: `artemis-tracker-lb` / `artemis_app` database (PostgreSQL)
+# MAGIC * **Unity Catalog**: `<your-catalog>.<your-schema>` (4 tables)
+# MAGIC * **Lakebase**: `<your-lakebase-instance>` / `artemis_app` database (PostgreSQL)
 # MAGIC
 # MAGIC **Data sources:**
 # MAGIC * Orion MPCV position & velocity vectors (Horizons body ID `-1024`)
@@ -37,8 +37,8 @@ from databricks.sdk import WorkspaceClient
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-UC_SCHEMA = "oil_pump_monitor_catalog.artemis_tracker"
-LAKEBASE_INSTANCE = "artemis-tracker-lb"
+UC_SCHEMA = "<your-catalog>.<your-schema>"
+LAKEBASE_INSTANCE = "<your-lakebase-instance>"
 LAKEBASE_DB = "artemis_app"
 LAUNCH_TIME = datetime(2026, 4, 1, 22, 35, 0, tzinfo=timezone.utc)
 HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"

@@ -44,7 +44,7 @@ def _try_postgres():
     # If no password from resource injection, generate via SDK
     if not password:
         try:
-            instance = os.environ.get("LAKEBASE_INSTANCE", "artemis-tracker-lb")
+            instance = os.environ.get("LAKEBASE_INSTANCE", "<your-lakebase-instance>")
             w = _get_workspace_client()
             if not user:
                 user = w.current_user.me().user_name
@@ -123,7 +123,7 @@ def _init_backend():
 # Public query helpers
 # ---------------------------------------------------------------------------
 
-UC_SCHEMA = os.environ.get("UC_SCHEMA", "oil_pump_monitor_catalog.artemis_tracker")
+UC_SCHEMA = os.environ.get("UC_SCHEMA", "<your-catalog>.<your-schema>")
 
 def get_backend() -> str:
     """Return current backend: 'postgres', 'databricks', or 'none'."""
