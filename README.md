@@ -91,8 +91,25 @@ artemis-tracker/
 
 ## Disclaimer
 
-This is a demonstration project built for educational and showcase purposes only. It is not affiliated with, endorsed by, or connected to NASA, JPL, or the Artemis program. All NASA data is sourced from publicly available APIs. Spacecraft specifications are from publicly published NASA documents.
+This is a demonstration project built for educational and showcase purposes only. It is not affiliated with, endorsed by, or connected to NASA, JPL, ESA, CSA, or the Artemis program. All NASA data is sourced from publicly available APIs. Spacecraft specifications are from publicly published NASA documents. See [DISCLAIMER](DISCLAIMER.md) for full details.
+
+## Third-Party Library Licenses
+
+(c) 2026 Databricks, Inc. All rights reserved. The source in this project is provided subject to the [Databricks License](LICENSE). All included or referenced third-party libraries are subject to the licenses set forth below.
+
+| Library | Version | License | Source |
+|---------|---------|---------|--------|
+| fastapi | >=0.100.0 | MIT | https://github.com/tiangolo/fastapi |
+| uvicorn | >=0.23.0 | BSD 3-Clause | https://github.com/encode/uvicorn |
+| databricks-sdk | >=0.28.0 | Databricks License | https://github.com/databricks/databricks-sdk-py |
+| react | ^18.2.0 | MIT | https://github.com/facebook/react |
+| three | ^0.160.0 | MIT | https://github.com/mrdoob/three.js |
+| @react-three/fiber | ^8.15.0 | MIT | https://github.com/pmndrs/react-three-fiber |
+| @react-three/drei | ^9.88.0 | MIT | https://github.com/pmndrs/drei |
+| react-router-dom | ^6.20.0 | MIT | https://github.com/remix-run/react-router |
+| requests | >=2.31.0 | Apache 2.0 | https://github.com/psf/requests |
+| psycopg2-binary | >=2.9.0 | LGPL | https://github.com/psycopg/psycopg2 |
 
 ## License
 
-Copyright (2026) Databricks, Inc. This software is provided as a demonstration and educational resource only. It is not intended for production use. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. See [LICENSE](LICENSE) and [DISCLAIMER](DISCLAIMER.md) for full details.
+Copyright (2026) Databricks, Inc. This software is provided subject to the [Databricks License](LICENSE). See also [NOTICE](NOTICE), [SECURITY](SECURITY.md), and [CONTRIBUTING](CONTRIBUTING.md).
