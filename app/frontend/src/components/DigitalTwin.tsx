@@ -283,6 +283,23 @@ const DigitalTwin: React.FC<DigitalTwinProps> = ({
             </ul>
           </div>
         )}
+
+        {/* ── NASA Live PiP ── */}
+        <div className="dt-pip">
+          <div className="dt-pip-header">
+            <span className="dt-pip-dot" />
+            NASA LIVE
+          </div>
+          <iframe
+            src="https://www.youtube.com/embed/m3kR2KK8TEs?autoplay=1&mute=1&controls=1&modestbranding=1&playsinline=1&rel=0"
+            title="NASA Live"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="dt-pip-video"
+          />
+        </div>
       </div>
     </div>
   );
