@@ -4,13 +4,12 @@
 
 import logging
 import math
-from typing import Any, Optional
+from typing import Any
 
 import requests
 from fastapi import APIRouter, Query
 
 from app.cache import cached
-from app.db import execute_query, get_backend, table
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["path"])
@@ -26,15 +25,16 @@ def _parse_float(val: Any, default: float = 0.0) -> float:
 
 
 def _fetch_path_from_horizons() -> dict[str, Any]:
-    """Fetch trajectory from Horizons: launch to now, 1-hour steps."""
+    """Fetch full trajectory from Horizons: launch to splashdown, 15-min steps."""
     try:
         resp = requests.get("https://ssd.jpl.nasa.gov/api/horizons.api", params={
             "format": "text", "COMMAND": "'-1024'", "EPHEM_TYPE": "'VECTORS'",
-            "CENTER": "'500@399'", "START_TIME": "'2026-04-02 00:00'",
-            "STOP_TIME": "'now'", "STEP_SIZE": "'1 HOUR'",
+            "CENTER": "'500@399'", "START_TIME": "'2026-04-02 02:00'",
+            "STOP_TIME": "'2026-04-10 18:00'",
+            "STEP_SIZE": "'15 MINUTES'",
             "REF_PLANE": "'FRAME'", "VEC_TABLE": "'2'",
             "MAKE_EPHEM": "'YES'", "OBJ_DATA": "'NO'", "CSV_FORMAT": "'YES'"
-        }, timeout=30)
+        }, timeout=45)
         points = []
         in_data = False
         for line in resp.text.split("\n"):
@@ -50,9 +50,8 @@ def _fetch_path_from_horizons() -> dict[str, Any]:
             if len(parts) >= 8:
                 try:
                     x, y, z = float(parts[2]), float(parts[3]), float(parts[4])
-                    vx, vy, vz = float(parts[5]), float(parts[6]), float(parts[7])
                     dist_e = math.sqrt(x**2 + y**2 + z**2)
-                    speed = math.sqrt(vx**2 + vy**2 + vz**2) * 3600
+                    speed = math.sqrt(float(parts[5])**2 + float(parts[6])**2 + float(parts[7])**2) * 3600
                     points.append({
                         "epoch_utc": parts[1].strip().replace("A.D. ", ""),
                         "x_km": x, "y_km": y, "z_km": z,
@@ -69,46 +68,37 @@ def _fetch_path_from_horizons() -> dict[str, Any]:
         return {"ref_frame": "J2000_EARTH", "point_count": 0, "points": []}
 
 
-@cached(ttl_seconds=120)
+@cached(ttl_seconds=300)
 def _fetch_path(window: str) -> dict[str, Any]:
-    backend = get_backend()
-
-    if backend != "postgres":
-        # No Lakebase — fetch from Horizons
-        return _fetch_path_from_horizons()
-
-    t = table('trajectory_history')
-    if window == "all":
-        sql = f"SELECT epoch_utc, x_km, y_km, z_km, distance_earth_km, distance_moon_km, speed_km_h FROM {t} ORDER BY epoch_utc"
-    else:
-        sql = f"SELECT epoch_utc, x_km, y_km, z_km, distance_earth_km, distance_moon_km, speed_km_h FROM {t} WHERE epoch_utc >= current_timestamp() - INTERVAL {window} ORDER BY epoch_utc"
-
+    # Try DB first
     try:
-        rows = execute_query(sql)
-    except Exception:
-        logger.exception("Failed to query trajectory_history")
-        return _fetch_path_from_horizons()
+        from app.db import execute_query, get_backend, table
+        backend = get_backend()
+        if backend in ("postgres", "databricks"):
+            t = table('trajectory_history')
+            sql = f"SELECT epoch_utc, x_km, y_km, z_km, distance_earth_km, distance_moon_km, speed_km_h FROM {t} ORDER BY epoch_utc"
+            rows = execute_query(sql)
+            if rows and len(rows) > 10:
+                points = [
+                    {
+                        "epoch_utc": r.get("epoch_utc"),
+                        "x_km": _parse_float(r.get("x_km")),
+                        "y_km": _parse_float(r.get("y_km")),
+                        "z_km": _parse_float(r.get("z_km")),
+                        "distance_earth_km": _parse_float(r.get("distance_earth_km")),
+                        "distance_moon_km": _parse_float(r.get("distance_moon_km")),
+                        "speed_km_h": _parse_float(r.get("speed_km_h")),
+                    }
+                    for r in rows
+                ]
+                return {"ref_frame": "J2000_EARTH", "point_count": len(points), "points": points}
+    except Exception as e:
+        logger.warning("DB path query failed: %s", e)
 
-    points = [
-        {
-            "epoch_utc": r.get("epoch_utc"),
-            "x_km": _parse_float(r.get("x_km")),
-            "y_km": _parse_float(r.get("y_km")),
-            "z_km": _parse_float(r.get("z_km")),
-            "distance_earth_km": _parse_float(r.get("distance_earth_km")),
-            "distance_moon_km": _parse_float(r.get("distance_moon_km")),
-            "speed_km_h": _parse_float(r.get("speed_km_h")),
-        }
-        for r in rows
-    ]
-
-    return {
-        "ref_frame": "J2000_EARTH",
-        "point_count": len(points),
-        "points": points,
-    }
+    # Fallback to Horizons
+    return _fetch_path_from_horizons()
 
 
 @router.get("/path")
-async def get_trajectory(window: str = Query(default="all", description="Time window")):
+async def get_trajectory(window: str = Query(default="all")):
     return _fetch_path(window)

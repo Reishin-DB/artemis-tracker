@@ -196,29 +196,41 @@ function Moon({
   );
 }
 
-/* ---------- Trajectory Path -------------------------------------- */
+/* ---------- Trajectory Path (smooth CatmullRom curve) ----------- */
 function TrajectoryPath({
   points,
 }: {
   points: Array<{ x_km: number; y_km: number; z_km: number }>;
 }) {
   const { positions, colors } = useMemo(() => {
-    if (points.length < 2) return { positions: [], colors: [] };
+    if (points.length < 2) return { positions: [] as [number,number,number][], colors: [] as [number,number,number][] };
+
+    // Convert raw data points to scene coordinates
+    const rawPts = points.map(
+      (p) => new THREE.Vector3(toScene(p.x_km), toScene(p.y_km), toScene(p.z_km))
+    );
+
+    // Create smooth CatmullRom spline through the points
+    const curve = new THREE.CatmullRomCurve3(rawPts, false, "catmullrom", 0.5);
+
+    // Sample many smooth points along the curve
+    const numSamples = Math.min(rawPts.length * 4, 3000);
+    const smoothPts = curve.getPoints(numSamples);
 
     const pos: [number, number, number][] = [];
     const col: [number, number, number][] = [];
-
     const startColor = new THREE.Color("#1e5bb8");
     const endColor = new THREE.Color("#FC3D21");
     const tmpColor = new THREE.Color();
 
-    for (let i = 0; i < points.length; i++) {
-      const p = points[i];
-      pos.push([toScene(p.x_km), toScene(p.y_km), toScene(p.z_km)]);
-      const t = i / (points.length - 1);
+    for (let i = 0; i < smoothPts.length; i++) {
+      const p = smoothPts[i];
+      pos.push([p.x, p.y, p.z]);
+      const t = i / (smoothPts.length - 1);
       tmpColor.copy(startColor).lerp(endColor, t);
       col.push([tmpColor.r, tmpColor.g, tmpColor.b]);
     }
+
     return { positions: pos, colors: col };
   }, [points]);
 
@@ -228,9 +240,31 @@ function TrajectoryPath({
     <Line
       points={positions}
       vertexColors={colors}
-      lineWidth={1.8}
+      lineWidth={2.5}
       transparent
-      opacity={0.85}
+      opacity={0.9}
+    />
+  );
+}
+
+/* ---------- Orbital plane ring (faint reference) ---------------- */
+function OrbitalPlaneRing() {
+  const points = useMemo(() => {
+    const pts: [number, number, number][] = [];
+    for (let i = 0; i <= 128; i++) {
+      const angle = (i / 128) * Math.PI * 2;
+      pts.push([Math.cos(angle) * 38, 0, Math.sin(angle) * 38]);
+    }
+    return pts;
+  }, []);
+
+  return (
+    <Line
+      points={points}
+      color="#1a3a5a"
+      lineWidth={0.5}
+      transparent
+      opacity={0.15}
     />
   );
 }
@@ -522,13 +556,16 @@ const SpaceView: React.FC<SpaceViewProps> = ({
       {/* Stars */}
       <Starfield count={2500} />
 
+      {/* Orbital plane reference ring */}
+      <OrbitalPlaneRing />
+
       {/* Earth at origin */}
       <Earth />
 
       {/* Moon */}
       <Moon position={moonScenePos} />
 
-      {/* Trajectory arc */}
+      {/* Smooth trajectory tube */}
       {trajectoryPoints.length > 1 && (
         <TrajectoryPath points={trajectoryPoints} />
       )}
