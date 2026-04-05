@@ -116,4 +116,4 @@ I'll be watching. Through an app I built. With real data. Because I could.
 
 ---
 
-*The Artemis II Mission Tracker is live at [artemis-tracker-7474647106303257.aws.databricksapps.com](https://artemis-tracker-7474647106303257.aws.databricksapps.com). Source code on [GitHub](https://github.com/Reishin-DB/artemis-tracker).*
+*Source code on [GitHub](https://github.com/Reishin-DB/artemis-tracker).*
