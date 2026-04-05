@@ -1931,6 +1931,18 @@ body {
   margin-bottom: 8px;
 }
 
+.advisor-welcome-powered {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--nasa-blue-light);
+  background: rgba(11, 61, 145, 0.15);
+  padding: 3px 12px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
 .advisor-welcome-text {
   font-size: 0.85rem;
   color: var(--text-muted);

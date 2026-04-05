@@ -6,18 +6,19 @@ interface Message {
 }
 
 const SUGGESTIONS = [
-  "What's Orion's current status?",
+  "What is Orion's current distance from the Moon?",
+  "Which milestones are completed?",
+  "What was Orion's maximum speed?",
+  "Show trajectory near the Moon",
   "When is the lunar flyby?",
-  "Tell me about the crew",
-  "What happens during re-entry?",
-  "How does DSN tracking work?",
-  "What's different from Apollo?",
+  "How has distance from Earth changed?",
 ];
 
 const MissionAdvisor: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -33,16 +34,13 @@ const MissionAdvisor: React.FC = () => {
     setInput("");
     setStreaming(true);
 
-    // Add empty assistant message for streaming
-    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-
     try {
       const resp = await fetch("/api/v1/advisor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: text.trim(),
-          history: messages.slice(-10),
+          conversation_id: conversationId,
         }),
       });
 
@@ -50,57 +48,24 @@ const MissionAdvisor: React.FC = () => {
         throw new Error(`HTTP ${resp.status}`);
       }
 
-      const reader = resp.body?.getReader();
-      if (!reader) throw new Error("No response body");
+      const data = await resp.json();
 
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
-
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6).trim();
-            if (data === "[DONE]") break;
-            try {
-              const parsed = JSON.parse(data);
-              if (parsed.content) {
-                setMessages((prev) => {
-                  const updated = [...prev];
-                  const last = updated[updated.length - 1];
-                  if (last && last.role === "assistant") {
-                    updated[updated.length - 1] = {
-                      ...last,
-                      content: last.content + parsed.content,
-                    };
-                  }
-                  return updated;
-                });
-              }
-            } catch {
-              // skip parse errors
-            }
-          }
-        }
+      if (data.conversation_id) {
+        setConversationId(data.conversation_id);
       }
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.content || "No response." },
+      ]);
     } catch (err) {
-      setMessages((prev) => {
-        const updated = [...prev];
-        const last = updated[updated.length - 1];
-        if (last && last.role === "assistant" && !last.content) {
-          updated[updated.length - 1] = {
-            ...last,
-            content: `Connection error: ${err instanceof Error ? err.message : "Unknown error"}. Try again.`,
-          };
-        }
-        return updated;
-      });
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: `Error: ${err instanceof Error ? err.message : "Unknown error"}. Try again.`,
+        },
+      ]);
     } finally {
       setStreaming(false);
       inputRef.current?.focus();
@@ -119,8 +84,9 @@ const MissionAdvisor: React.FC = () => {
           <div className="advisor-welcome">
             <div className="advisor-welcome-icon">🛰</div>
             <div className="advisor-welcome-title">Mission Advisor</div>
+            <div className="advisor-welcome-powered">Powered by Genie</div>
             <div className="advisor-welcome-text">
-              AI-powered mission intelligence. Ask about crew, trajectory, systems, timeline, or anything Artemis II.
+              Ask natural language questions about Orion's trajectory, mission milestones, telemetry, and more. Genie queries the live mission database.
             </div>
             <div className="advisor-suggestions">
               {SUGGESTIONS.map((s) => (

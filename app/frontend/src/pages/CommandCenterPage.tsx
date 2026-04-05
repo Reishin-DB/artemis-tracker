@@ -271,7 +271,7 @@ const CommandCenterPage: React.FC = () => {
               <div className="mcc-panel mcc-panel-advisor">
                 <div className="mcc-panel-header">
                   <span className="mcc-panel-dot green" />
-                  MISSION ADVISOR
+                  MISSION ADVISOR — POWERED BY GENIE
                 </div>
                 <MissionAdvisor />
               </div>
