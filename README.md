@@ -95,4 +95,4 @@ This is a demonstration project built for educational and showcase purposes only
 
 ## License
 
-Databricks License - See [LICENSE](LICENSE) file.
+Copyright (2026) Databricks, Inc. This software is provided as a demonstration and educational resource only. It is not intended for production use. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. See [LICENSE](LICENSE) and [DISCLAIMER](DISCLAIMER.md) for full details.
