@@ -70,15 +70,16 @@ def _fetch_from_horizons() -> dict[str, Any]:
     speed = math.sqrt(vx**2 + vy**2 + vz**2) * 3600
 
     dist_m = 0.0
+    moon_pos = None
     moon = _parse_horizons_vector("301", start, stop)
     if moon:
         dist_m = math.sqrt((x - moon[0])**2 + (y - moon[1])**2 + (z - moon[2])**2)
+        moon_pos = {"x_km": moon[0], "y_km": moon[1], "z_km": moon[2]}
 
     elapsed = (now - LAUNCH).total_seconds()
     d, h, m = int(elapsed // 86400), int((elapsed % 86400) // 3600), int((elapsed % 3600) // 60)
 
     # Phase based on mission timeline (flyby Apr 6 12:00 UTC, return starts Apr 7)
-    from datetime import datetime, timezone
     FLYBY_TIME = datetime(2026, 4, 6, 12, 0, 0, tzinfo=timezone.utc)
     RETURN_START = datetime(2026, 4, 7, 0, 0, 0, tzinfo=timezone.utc)
     ENTRY_TIME = datetime(2026, 4, 10, 16, 0, 0, tzinfo=timezone.utc)
@@ -101,6 +102,7 @@ def _fetch_from_horizons() -> dict[str, Any]:
         "speed_km_h": speed, "speed_mph": speed * 0.621371,
         "position": {"x_km": x, "y_km": y, "z_km": z},
         "velocity": {"vx_km_s": vx, "vy_km_s": vy, "vz_km_s": vz},
+        "moon_position": moon_pos,
         "data_source": "horizons_live", "staleness_seconds": 0, "stale": False,
     }
     _last_good = result

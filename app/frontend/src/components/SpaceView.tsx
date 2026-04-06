@@ -6,7 +6,7 @@ import * as THREE from "three";
 /* ------------------------------------------------------------------ */
 /*  Scale: 1 scene-unit = 10 000 km                                   */
 /* ------------------------------------------------------------------ */
-const SCALE = 10_000;
+const SCALE = 20_000;
 const toScene = (km: number) => km / SCALE;
 
 const EARTH_RADIUS = toScene(6_371);   // 0.637
@@ -253,7 +253,7 @@ function OrbitalPlaneRing() {
     const pts: [number, number, number][] = [];
     for (let i = 0; i <= 128; i++) {
       const angle = (i / 128) * Math.PI * 2;
-      pts.push([Math.cos(angle) * 38, 0, Math.sin(angle) * 38]);
+      pts.push([Math.cos(angle) * 19, 0, Math.sin(angle) * 19]);
     }
     return pts;
   }, []);
@@ -489,7 +489,7 @@ const SpaceView: React.FC<SpaceViewProps> = ({
         toScene(moonPosition.z_km),
       ];
     }
-    return [38, 0, 0]; // approximate default
+    return [19, 0, 0]; // approximate default
   }, [moonPosition]);
 
   /* Current Orion position in scene coordinates */

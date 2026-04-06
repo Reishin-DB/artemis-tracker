@@ -19,6 +19,16 @@ interface CurrentData {
     y_km: number;
     z_km: number;
   };
+  velocity?: {
+    vx_km_s: number;
+    vy_km_s: number;
+    vz_km_s: number;
+  };
+  moon_position?: {
+    x_km: number;
+    y_km: number;
+    z_km: number;
+  };
 }
 
 interface PathPoint {
@@ -30,6 +40,7 @@ interface PathPoint {
 
 interface PathData {
   points: PathPoint[];
+  flyby_moon_position?: { x_km: number; y_km: number; z_km: number };
 }
 
 interface Milestone {
@@ -112,6 +123,10 @@ const TrackerPage: React.FC = () => {
             <OrbitView
               pathData={path.data?.points ?? null}
               currentPosition={current.data?.position ?? null}
+              currentVelocity={current.data?.velocity ?? null}
+              moonPosition={path.data?.flyby_moon_position ?? current.data?.moon_position}
+              distanceEarthKm={current.data?.distance_earth_km}
+              distanceMoonKm={current.data?.distance_moon_km}
             />
 
             <Timeline

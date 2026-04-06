@@ -25,6 +25,7 @@ interface CurrentData {
   staleness_seconds: number;
   position: { x_km: number; y_km: number; z_km: number };
   velocity: { vx_km_s: number; vy_km_s: number; vz_km_s: number };
+  moon_position?: { x_km: number; y_km: number; z_km: number };
   distance_earth_miles: number;
   distance_moon_miles: number;
 }
@@ -38,6 +39,7 @@ interface PathPoint {
 
 interface PathData {
   points: PathPoint[];
+  flyby_moon_position?: { x_km: number; y_km: number; z_km: number };
 }
 
 interface Milestone {
@@ -207,6 +209,7 @@ const CommandCenterPage: React.FC = () => {
                       pathData={path.data?.points ?? null}
                       currentPosition={data?.position ?? null}
                       currentVelocity={data?.velocity ?? null}
+                      moonPosition={path.data?.flyby_moon_position ?? data?.moon_position}
                       distanceEarthKm={data?.distance_earth_km}
                       distanceMoonKm={data?.distance_moon_km}
                     />
