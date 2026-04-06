@@ -7,3 +7,4 @@ _deploy/
 venv/
 .venv/
 app/frontend/node_modules/
+app.yaml

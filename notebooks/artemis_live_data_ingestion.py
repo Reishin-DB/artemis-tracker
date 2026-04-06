@@ -314,15 +314,20 @@ def fetch_current_position():
     m = int((elapsed % 3600) // 60)
     elapsed_display = f"{d}d {h}h {m}m"
 
-    # Determine phase
+    # Determine phase based on mission timeline (not distance)
+    FLYBY_TIME = datetime(2026, 4, 6, 12, 0, 0, tzinfo=timezone.utc)
+    RETURN_START = datetime(2026, 4, 7, 0, 0, 0, tzinfo=timezone.utc)
+    ENTRY_TIME = datetime(2026, 4, 10, 16, 0, 0, tzinfo=timezone.utc)
     if distance_earth_km < 10000:
         phase = "near_earth"
-    elif distance_moon_km < 10000:
-        phase = "lunar_flyby"
-    elif distance_earth_km < distance_moon_km:
+    elif now < FLYBY_TIME:
         phase = "transit_out"
-    else:
+    elif now < RETURN_START:
+        phase = "lunar_flyby"
+    elif now < ENTRY_TIME:
         phase = "transit_return"
+    else:
+        phase = "reentry"
 
     # Determine last milestone based on phase
     milestone_map = {

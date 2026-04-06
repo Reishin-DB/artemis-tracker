@@ -20,16 +20,18 @@ env:
   - name: PGDATABASE
     value: "artemis_app"
   - name: LAKEBASE_INSTANCE
-    value: "<your-lakebase-instance>"
+    value: "artemis-tracker-lb"
   - name: DATABRICKS_WAREHOUSE_ID
-    value: "<your-warehouse-id>"
+    value: "87e069097741b56c"
   - name: GENIE_SPACE_ID
-    value: "<your-genie-space-id>"
+    value: "01f1313bcf70177d8f12000e64d0f94a"
+  - name: UC_SCHEMA
+    value: "oil_pump_monitor_catalog.artemis_tracker"
 
 resources:
   - name: artemis-lakebase
     description: "Lakebase PostgreSQL for Artemis II mission data"
     database:
-      instance_name: <your-lakebase-instance>
+      instance_name: artemis-tracker-lb
       database_name: artemis_app
       permission: CAN_CONNECT_AND_CREATE

@@ -77,17 +77,25 @@ def _fetch_from_horizons() -> dict[str, Any]:
     elapsed = (now - LAUNCH).total_seconds()
     d, h, m = int(elapsed // 86400), int((elapsed % 86400) // 3600), int((elapsed % 3600) // 60)
 
+    # Phase based on mission timeline (flyby Apr 6 12:00 UTC, return starts Apr 7)
+    from datetime import datetime, timezone
+    FLYBY_TIME = datetime(2026, 4, 6, 12, 0, 0, tzinfo=timezone.utc)
+    RETURN_START = datetime(2026, 4, 7, 0, 0, 0, tzinfo=timezone.utc)
+    ENTRY_TIME = datetime(2026, 4, 10, 16, 0, 0, tzinfo=timezone.utc)
+    now_utc = datetime.now(timezone.utc)
+
     if dist_e < 10000: phase = "near_earth"
-    elif dist_m < 10000: phase = "lunar_flyby"
-    elif dist_e < dist_m: phase = "transit_out"
-    else: phase = "transit_return"
+    elif now_utc < FLYBY_TIME: phase = "transit_out"
+    elif now_utc < RETURN_START: phase = "lunar_flyby"
+    elif now_utc < ENTRY_TIME: phase = "transit_return"
+    else: phase = "reentry"
 
     result = {
         "last_update_utc": now.isoformat(),
         "mission_elapsed_s": elapsed,
         "mission_elapsed_display": f"{d}d {h}h {m}m",
         "current_phase": phase, "phase": phase,
-        "last_milestone": "Outbound Coast",
+        "last_milestone": {"transit_out": "Outbound Coast", "lunar_flyby": "Lunar Flyby", "transit_return": "Return Coast", "reentry": "Entry Interface"}.get(phase, "Outbound Coast"),
         "distance_earth_km": dist_e, "distance_earth_miles": dist_e * 0.621371,
         "distance_moon_km": dist_m, "distance_moon_miles": dist_m * 0.621371,
         "speed_km_h": speed, "speed_mph": speed * 0.621371,
