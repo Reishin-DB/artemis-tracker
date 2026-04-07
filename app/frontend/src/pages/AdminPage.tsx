@@ -197,7 +197,7 @@ const SVG_CONTENT = `
 
   <rect x="500" y="553" width="430" height="40" class="box" fill="#0f172a" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4 2"/>
   <text x="715" y="570" text-anchor="middle" class="title" style="fill:#f59e0b">Genie Auto-Ingestion — scheduled notebook writes to UC + Lakebase</text>
-  <text x="715" y="583" text-anchor="middle" class="subtitle">Job ID 1015162933032962 | Every 5 min | Serverless compute</text>
+  <text x="715" y="583" text-anchor="middle" class="subtitle">Every 5 min | Serverless compute</text>
 
   <text x="480" y="620" text-anchor="middle" style="font-size:10px;fill:#475569;">
     Artemis II Mission Tracker — Databricks | Lakebase | Unity Catalog | JPL Horizons | Foundation Models | React Three Fiber

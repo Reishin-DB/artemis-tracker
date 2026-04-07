@@ -197,53 +197,95 @@ function Moon({
 }
 
 /* ---------- Trajectory Path (smooth CatmullRom curve) ----------- */
+/*  Splits into traveled (solid) and predicted return (dimmer) arcs  */
 function TrajectoryPath({
   points,
+  currentPosition,
 }: {
-  points: Array<{ x_km: number; y_km: number; z_km: number }>;
+  points: Array<{ x_km: number; y_km: number; z_km: number; epoch_utc?: string }>;
+  currentPosition?: { x_km: number; y_km: number; z_km: number } | null;
 }) {
-  const { positions, colors } = useMemo(() => {
-    if (points.length < 2) return { positions: [] as [number,number,number][], colors: [] as [number,number,number][] };
+  const { traveled, predicted } = useMemo(() => {
+    if (points.length < 2)
+      return {
+        traveled: { positions: [] as [number,number,number][], colors: [] as [number,number,number][] },
+        predicted: { positions: [] as [number,number,number][] },
+      };
 
-    // Convert raw data points to scene coordinates
-    const rawPts = points.map(
-      (p) => new THREE.Vector3(toScene(p.x_km), toScene(p.y_km), toScene(p.z_km))
-    );
+    // Find the split index: closest point to current position (i.e. "now")
+    let splitIdx = points.length; // default: everything is traveled
+    if (currentPosition) {
+      const cx = currentPosition.x_km, cy = currentPosition.y_km, cz = currentPosition.z_km;
+      let minDist = Infinity;
+      for (let i = 0; i < points.length; i++) {
+        const dx = points[i].x_km - cx, dy = points[i].y_km - cy, dz = points[i].z_km - cz;
+        const d = dx * dx + dy * dy + dz * dz;
+        if (d < minDist) { minDist = d; splitIdx = i + 1; }
+      }
+    }
 
-    // Create smooth CatmullRom spline through the points
-    const curve = new THREE.CatmullRomCurve3(rawPts, false, "catmullrom", 0.5);
+    const traveledPts = points.slice(0, splitIdx);
+    const predictedPts = splitIdx > 0 ? points.slice(splitIdx - 1) : []; // overlap by 1 for continuity
 
-    // Sample many smooth points along the curve
-    const numSamples = Math.min(rawPts.length * 4, 3000);
-    const smoothPts = curve.getPoints(numSamples);
+    // Build smooth traveled arc
+    const buildSmooth = (raw: Array<{ x_km: number; y_km: number; z_km: number }>) => {
+      if (raw.length < 2) return [];
+      const vecs = raw.map((p) => new THREE.Vector3(toScene(p.x_km), toScene(p.y_km), toScene(p.z_km)));
+      const curve = new THREE.CatmullRomCurve3(vecs, false, "catmullrom", 0.5);
+      return curve.getPoints(Math.min(vecs.length * 4, 3000));
+    };
 
-    const pos: [number, number, number][] = [];
-    const col: [number, number, number][] = [];
+    const smoothTraveled = buildSmooth(traveledPts);
+    const smoothPredicted = buildSmooth(predictedPts);
+
+    // Traveled: blue → orange gradient
+    const tPos: [number,number,number][] = [];
+    const tCol: [number,number,number][] = [];
     const startColor = new THREE.Color("#1e5bb8");
     const endColor = new THREE.Color("#FC3D21");
     const tmpColor = new THREE.Color();
-
-    for (let i = 0; i < smoothPts.length; i++) {
-      const p = smoothPts[i];
-      pos.push([p.x, p.y, p.z]);
-      const t = i / (smoothPts.length - 1);
+    for (let i = 0; i < smoothTraveled.length; i++) {
+      const p = smoothTraveled[i];
+      tPos.push([p.x, p.y, p.z]);
+      const t = i / (smoothTraveled.length - 1);
       tmpColor.copy(startColor).lerp(endColor, t);
-      col.push([tmpColor.r, tmpColor.g, tmpColor.b]);
+      tCol.push([tmpColor.r, tmpColor.g, tmpColor.b]);
     }
 
-    return { positions: pos, colors: col };
-  }, [points]);
+    // Predicted: dim white positions
+    const pPos: [number,number,number][] = smoothPredicted.map((p) => [p.x, p.y, p.z]);
 
-  if (positions.length < 2) return null;
+    return {
+      traveled: { positions: tPos, colors: tCol },
+      predicted: { positions: pPos },
+    };
+  }, [points, currentPosition]);
 
   return (
-    <Line
-      points={positions}
-      vertexColors={colors}
-      lineWidth={2.5}
-      transparent
-      opacity={0.9}
-    />
+    <>
+      {traveled.positions.length >= 2 && (
+        <Line
+          points={traveled.positions}
+          vertexColors={traveled.colors}
+          lineWidth={2.5}
+          transparent
+          opacity={0.9}
+        />
+      )}
+      {predicted.positions.length >= 2 && (
+        <Line
+          points={predicted.positions}
+          color="#4a90d9"
+          lineWidth={1.5}
+          transparent
+          opacity={0.35}
+          dashed
+          dashSize={0.3}
+          dashScale={1}
+          gapSize={0.15}
+        />
+      )}
+    </>
   );
 }
 
@@ -565,9 +607,9 @@ const SpaceView: React.FC<SpaceViewProps> = ({
       {/* Moon */}
       <Moon position={moonScenePos} />
 
-      {/* Smooth trajectory tube */}
+      {/* Trajectory: solid traveled arc + dashed predicted return */}
       {trajectoryPoints.length > 1 && (
-        <TrajectoryPath points={trajectoryPoints} />
+        <TrajectoryPath points={trajectoryPoints} currentPosition={currentPosition} />
       )}
 
       {/* Orion spacecraft */}

@@ -139,6 +139,7 @@ def _fetch_path_from_horizons() -> dict[str, Any]:
 def _fetch_path(window: str) -> dict[str, Any]:
     # Try DB first
     try:
+        from datetime import datetime, timedelta
         from app.db import execute_query, get_backend, table
         backend = get_backend()
         if backend in ("postgres", "databricks"):
@@ -158,13 +159,53 @@ def _fetch_path(window: str) -> dict[str, Any]:
                     }
                     for r in rows
                 ]
-                # Find apex (furthest from Earth) and fetch Moon position at that time
+
+                # Extend with predicted Horizons trajectory if DB doesn't
+                # cover the full mission (through Apr 10 18:00 splashdown).
+                # This ensures the return-to-Earth arc is always visible.
+                MISSION_END = "2026-04-10 18:00"
+                last_epoch = str(points[-1].get("epoch_utc", ""))
+                try:
+                    for fmt in ("%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y-%b-%d %H:%M:%S.%f", "%Y-%b-%d %H:%M"):
+                        try:
+                            last_dt = datetime.strptime(last_epoch[:26], fmt)
+                            break
+                        except ValueError:
+                            continue
+                    else:
+                        last_dt = None
+
+                    mission_end_dt = datetime(2026, 4, 10, 18, 0)
+                    if last_dt and last_dt < mission_end_dt - timedelta(hours=1):
+                        future_start = (last_dt + timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M")
+                        future_rows = _fetch_horizons_vectors("-1024", future_start, MISSION_END, "15 MINUTES")
+                        moon_future = _fetch_horizons_vectors("301", future_start, MISSION_END, "15 MINUTES")
+                        moon_idx = {i: r for i, r in enumerate(moon_future)}
+                        for i, (epoch, x, y, z, vx, vy, vz) in enumerate(future_rows):
+                            dist_e = math.sqrt(x**2 + y**2 + z**2)
+                            speed = math.sqrt(vx**2 + vy**2 + vz**2) * 3600
+                            dist_m = 0.0
+                            moon = moon_idx.get(i)
+                            if moon:
+                                mx, my, mz = moon[1], moon[2], moon[3]
+                                dist_m = math.sqrt((x - mx)**2 + (y - my)**2 + (z - mz)**2)
+                            points.append({
+                                "epoch_utc": epoch,
+                                "x_km": x, "y_km": y, "z_km": z,
+                                "distance_earth_km": dist_e,
+                                "distance_moon_km": dist_m,
+                                "speed_km_h": speed,
+                            })
+                        logger.info("Extended trajectory with %d predicted points through splashdown", len(future_rows))
+                except Exception as ext_err:
+                    logger.warning("Failed to extend trajectory with Horizons: %s", ext_err)
+
                 flyby_moon_pos = _get_flyby_moon_position(points)
                 return {"ref_frame": "J2000_EARTH", "point_count": len(points), "points": points, "flyby_moon_position": flyby_moon_pos}
     except Exception as e:
         logger.warning("DB path query failed: %s", e)
 
-    # Fallback to Horizons
+    # Fallback to Horizons (already fetches full mission window)
     return _fetch_path_from_horizons()
 
 
